@@ -61,7 +61,7 @@ public class CatalogApplication {
                     product.setName(name);
 
                     System.out.println("Установите цену для продукта: ");
-                    int price = sc.nextInt();
+                    String price = sc.nextLine();
                     product.setPrice(price);
                     product.setCategoryId(category);
 
@@ -173,26 +173,34 @@ public class CatalogApplication {
         for (Product product : productList) {
             System.out.println(product.getId() + " - " + product.getName() + " - " + product.getPrice());
         }
+
         System.out.print("Введите id: ");
         long enter = scanner.nextLong();
+        scanner.nextLine();
         try {
             manager.getTransaction().begin();
             Product product = manager.find(Product.class, enter);
-            scanner.nextLine();
 
-            System.out.println("Измените названию товара " + product.getName());
-            String proName = scanner.nextLine();
-            product.setName(proName);
+            System.out.println("Измените названию товара [" + product.getName() + "]");
+            String productName = scanner.nextLine();
+            if (!productName.isEmpty()) {
+                product.setName(productName);
+            }
 
-            System.out.println("Измените цену товара " + product.getPrice());
-            int proPrice = scanner.nextInt();
-            product.setPrice(proPrice);
+            System.out.println("Измените цену товара [" + product.getPrice() + "]");
+            String productPrice = scanner.nextLine();
+            if (!productPrice.isEmpty()) {
+                product.setPrice(productPrice);
+            }
 
             System.out.println(product.getCategoryId().getOption());
             System.out.println("Измените:");
             for (Value value : product.getValue()) {
                 System.out.println(value.getOptionId().getName());
-                value.setValue(scanner.nextLine());
+                String productValue = scanner.nextLine();
+                if (!productValue.isEmpty()) {
+                    value.setValue(productValue);
+                }
             }
 
             manager.getTransaction().commit();

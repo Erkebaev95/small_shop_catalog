@@ -20,7 +20,7 @@ public class Product {
 
     private String name;
 
-    private Integer price;
+    private String price;
 
     @Override
     public String toString() {
@@ -56,11 +56,11 @@ public class Product {
         this.name = name;
     }
 
-    public Integer getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
