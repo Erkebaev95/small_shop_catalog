@@ -98,6 +98,49 @@ public class CatalogApplication {
         }
     }
 
+    //
+    /*public static void main(String[] args) {
+        EntityManagerFactory factory =
+                Persistence.createEntityManagerFactory("default");
+        EntityManager manager = factory.createEntityManager();
+
+        String name = "Samsung Galaxy S21 Ultra";
+        String price = "390000";
+        String value = "Apple A12X Bionic";
+        TypedQuery<Product> query = manager
+                //.createQuery("select p from Product p where p.name = ?1 and p.price = ?2",
+                .createQuery("select p from Product p where p.name = :name and p.price = :price",
+                        Product.class);
+        //query.setParameter(1, name);
+        //query.setParameter(2, price);
+        query.setParameter("name", name);
+        query.setParameter("price", price);
+        System.out.println(query.getResultList());
+
+        System.out.println("Enter category's name:");
+        Scanner scanner = new Scanner(System.in);
+        Category category = new Category();
+        String enter = scanner.nextLine();
+
+        TypedQuery<Category> query = manager
+                .createQuery("select c from Category c where c.name = :enter", Category.class);
+        query.setParameter("enter", enter);
+
+        List<Category> categoryList = query.getResultList();
+        if (categoryList.isEmpty()) {
+            System.out.println("");
+        } else {
+            System.out.println("Категория с таким именем есть в бд" );
+        }
+
+        for (Category c : categoryList) {
+            if (c.getName().equals(enter)) {
+                System.out.println("Категория с таким именем есть" );
+            }
+        }
+        }
+        */
+
     // Добавление детали по категории
     public static void addDetails(EntityManager manager) {
         Scanner scanner = new Scanner(System.in);
@@ -193,7 +236,9 @@ public class CatalogApplication {
                 product.setPrice(productPrice);
             }
 
-            System.out.println(product.getCategoryId().getOption());
+            // Меняем значении у характеристики, точнее указываем
+            // новую value или оставляем старую value.
+            /*System.out.println(product.getCategoryId().getOption());
             System.out.println("Измените:");
             for (Value value : product.getValue()) {
                 System.out.println(value.getOptionId().getName());
@@ -201,8 +246,24 @@ public class CatalogApplication {
                 if (!productValue.isEmpty()) {
                     value.setValue(productValue);
                 }
-            }
+            }*/
 
+            // Дополняем пустых значений у характеристики.
+            for (Option option : product.getCategoryId().getOption()) {
+                System.out.println(option.getName());
+
+                TypedQuery<Value> query = manager
+                        .createQuery("select v from Value v where v.productId.id = ?4 and v.optionId.id = ?3", Value.class);
+                query.setParameter(4, product.getId());
+                query.setParameter(3, option.getId());
+
+                List<Value> valueList = query.getResultList();
+                String optionValue = scanner.nextLine();
+                if (valueList.isEmpty()) {
+                    Value value = new Value(optionValue, product, option);
+                    manager.persist(value);
+                }
+            }
             manager.getTransaction().commit();
         } catch (Exception e) {
             manager.getTransaction().rollback();

@@ -19,6 +19,13 @@ public class Category {
     @OneToMany(mappedBy = "categoryId")
     private List<Product> product;
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public Category() {
     }
 
@@ -57,6 +64,5 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
-
 
 }
