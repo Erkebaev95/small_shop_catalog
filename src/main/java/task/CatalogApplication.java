@@ -195,6 +195,7 @@ public class CatalogApplication {
 
             // Меняем значении у характеристики, точнее указываем
             // новую value или оставляем старую value.
+            // Простой вариант изменении данных.
             /*System.out.println(product.getCategoryId().getOption());
             System.out.println("Измените:");
             for (Value value : product.getValue()) {
@@ -205,7 +206,9 @@ public class CatalogApplication {
                 }
             }*/
 
-            // Заполняем пустых значений у характеристики.
+            // Заполняем пустых значений у характеристики,
+            // или меняем существующих значений.
+            // Продвинутый вариант предыдущего кода!
             for (Option option : product.getCategoryId().getOption()) {
                 System.out.println(option.getName());
 
@@ -216,9 +219,12 @@ public class CatalogApplication {
 
                 List<Value> valueList = query.getResultList();
                 String optionValue = scanner.nextLine();
-                if (valueList.isEmpty()) {
+
+                if (valueList.isEmpty()){
                     Value value = new Value(optionValue, product, option);
                     manager.persist(value);
+                } else {
+                    valueList.get(0).setValue(optionValue);
                 }
             }
             manager.getTransaction().commit();
